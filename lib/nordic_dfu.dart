@@ -95,9 +95,11 @@ class NordicDfu {
         const AndroidSpecialParameter(),
     IosSpecialParameter iosSpecialParameter = const IosSpecialParameter(),
   }) async {
+    print("calling method");
     _channel.setMethodCallHandler((MethodCall call) {
       switch (call.method) {
         case 'onDeviceConnected':
+          print("calling method: onDeviceConnected");
           progressListener?.onDeviceConnected(call.arguments);
           break;
         case 'onDeviceConnecting':
@@ -116,6 +118,7 @@ class NordicDfu {
           progressListener?.onDfuCompleted(call.arguments);
           break;
         case 'onDfuProcessStarted':
+          print("calling method: onDfuStarted");
           progressListener?.onDfuProcessStarted(call.arguments);
           break;
         case 'onDfuProcessStarting':
