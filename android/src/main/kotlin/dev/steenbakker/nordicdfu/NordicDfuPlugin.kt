@@ -91,6 +91,8 @@ class NordicDfuPlugin : FlutterPlugin, MethodCallHandler {
      * Start Dfu
      */
     private fun startDfu(address: String, name: String?, filePath: String?, forceDfu: Boolean?, enableUnsafeExperimentalButtonlessServiceInSecureDfu: Boolean?, disableNotification: Boolean?, keepBond: Boolean?, packetReceiptNotificationsEnabled: Boolean?, restoreBond: Boolean?, startAsForegroundService: Boolean?, result: MethodChannel.Result, numberOfPackets: Int?, enablePRNs: Boolean?) {
+        println("im in");
+        println(enableUnsafeExperimentalButtonlessServiceInSecureDfu);
         val starter = DfuServiceInitiator(address)
                 .setZip(filePath!!)
                 .setKeepBond(true)
@@ -134,12 +136,16 @@ class NordicDfuPlugin : FlutterPlugin, MethodCallHandler {
                 hasCreateNotification = true
             }
         }
+        print("going java")
         controller = starter.start(mContext!!, DfuService::class.java)
     }
 
     private val mDfuProgressListener: DfuProgressListenerAdapter = object : DfuProgressListenerAdapter() {
         override fun onDeviceConnected(deviceAddress: String) {
             super.onDeviceConnected(deviceAddress)
+
+            print("connect when?")
+
             channel!!.invokeMethod("onDeviceConnected", deviceAddress)
         }
 
@@ -185,16 +191,26 @@ class NordicDfuPlugin : FlutterPlugin, MethodCallHandler {
                 pendingResult!!.success(deviceAddress)
                 pendingResult = null
             }
+            print("${Thread.currentThread().name}")
+            
+            println("invoking completion");
             channel!!.invokeMethod("onDfuCompleted", deviceAddress)
+            //this@NordicDfuPlugin.runOnUiThread(java.lang.Runnable {
+            //    channel!!.invokeMethod("onDfuCompleted", deviceAddress)
+            //})
         }
 
         override fun onDfuProcessStarted(deviceAddress: String) {
             super.onDfuProcessStarted(deviceAddress)
+
+            print("start when sia")
+
             channel!!.invokeMethod("onDfuProcessStarted", deviceAddress)
         }
 
         override fun onDfuProcessStarting(deviceAddress: String) {
             super.onDfuProcessStarting(deviceAddress)
+            print("start when sia")
             channel!!.invokeMethod("onDfuProcessStarting", deviceAddress)
         }
 

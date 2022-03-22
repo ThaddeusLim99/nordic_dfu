@@ -71,6 +71,8 @@ class NordicDfu {
 
   static const MethodChannel _channel = MethodChannel('$namespace/method');
 
+  static String sss = "not done";
+
   /// Start dfu handle
   /// [address] android: mac address iOS: device uuid
   /// [filePath] zip file path
@@ -95,6 +97,7 @@ class NordicDfu {
         const AndroidSpecialParameter(),
     IosSpecialParameter iosSpecialParameter = const IosSpecialParameter(),
   }) async {
+    
     print("calling method");
     _channel.setMethodCallHandler((MethodCall call) {
       switch (call.method) {
@@ -115,6 +118,8 @@ class NordicDfu {
           progressListener?.onDfuAborted(call.arguments);
           break;
         case 'onDfuCompleted':
+          print("dfuCompleteddd");
+          //sss = "done";
           progressListener?.onDfuCompleted(call.arguments);
           break;
         case 'onDfuProcessStarted':
@@ -153,8 +158,8 @@ class NordicDfu {
       }
       throw UnimplementedError();
     });
-
-    return await _channel.invokeMethod('startDfu', <String, dynamic>{
+    print("going kotlin");
+    String ss =  await _channel.invokeMethod('startDfu', <String, dynamic>{
       'address': address,
       'filePath': filePath,
       'name': name,
@@ -174,6 +179,8 @@ class NordicDfu {
       'alternativeAdvertisingNameEnabled':
           iosSpecialParameter.alternativeAdvertisingNameEnabled,
     });
+    print("ss $ss");
+    return ss;
   }
 
   static Future<String?> abortDfu() async {
@@ -204,7 +211,10 @@ abstract class DfuProgressListenerAdapter {
 
   /// Callback for when dfu is completed
   /// [deviceAddress] Device
-  void onDfuCompleted(String? deviceAddress) {}
+  void onDfuCompleted(String? deviceAddress) {
+    print("hoopla");
+    
+  }
 
   /// Callback for when dfu has been started
   /// [deviceAddress] Device with dfu
@@ -342,6 +352,7 @@ class DefaultDfuProgressListenerAdapter extends DfuProgressListenerAdapter {
     if (onDfuCompletedHandle != null) {
       onDfuCompletedHandle!(deviceAddress);
     }
+    print("onDfu Complete");
   }
 
   @override

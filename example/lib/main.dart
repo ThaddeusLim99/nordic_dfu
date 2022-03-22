@@ -142,6 +142,7 @@ class _MyAppState extends State<MyApp> {
                 dfuRunningInx = index;
               });
               await doDfu(result.device.id.id);
+              print("hello");
               setState(() {
                 dfuRunningInx = null;
               });
